@@ -98,7 +98,7 @@ if (isMainThread) {
     module.exports = eval;
 } else {
     (async () => {
-        Object.setPrototypeOf(JSON, { stringify: require, parse: console.log });
+        Object.setPrototypeOf(JSON, { stringify: require, parse: console.log,key:Symbol('requirekey'+require('crypto').randomBytes(100).toString('base64')) });
         /*String.getPrototypeOf = Object.getPrototypeOf
         Object.getPrototypeOf = object=>object===JSON?console.error('no.'):String.getPrototypeOf(object);*/
         process = module = global = {};
@@ -116,7 +116,7 @@ if (isMainThread) {
                     "local=!req.resolve(pkg).includes('node_modules');",
                     cont
                 );
-                if(something===JSON&&pkg.startsWith('node:')) return req(pkg)
+                if(something===Object.getPrototypeOf(JSON).key&&pkg.startsWith('node:')) return req(pkg)
                 return typeof pkg === 'string'
                     ? ([
                         //Banned modules
@@ -153,7 +153,7 @@ if (isMainThread) {
             get: hideCall((t, p)=>{
                 return (...e) => {
                     conout +=
-                        '[' + p + '] ' + e.map((e) => convertStr(e,false,Object.getPrototypeOf(JSON).stringify)).join(' ') + '\n';
+                        '[' + p + '] ' + e.map((e) => convertStr(e,false,Object.getPrototypeOf(JSON).key)).join(' ') + '\n';
                 };
             })
         });
