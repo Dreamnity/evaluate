@@ -44,7 +44,7 @@ if (isMainThread) {
      */
     // eslint-disable-next-line no-shadow-restricted-names
     const eval = (
-        code = '',
+        code = '"No code provided"',
         { timeout = 5000, allowUnchecked = false, globals = {}, apifolder } = {}
     ) => {
         if (apifolder)
@@ -140,14 +140,14 @@ if (isMainThread) {
             }
         );
         // eslint-disable-next-line no-unused-vars
-        let unchecked = (code) =>
+        let unchecked = hideCall((code) =>
             new Promise((r) => {
+                parentPort.once('message', r);
                 parentPort.postMessage({
                     code,
                     aaaaaaaaaaaaaaaaaaaaaaaaaaaauwuaaaa: true
                 });
-                parentPort.once('message', r);
-            });
+            }));
         let conout = '';
         console = new Proxy(console, {
             get: hideCall((t, p)=>{
@@ -159,9 +159,7 @@ if (isMainThread) {
         });
         const result =
             convertStr(
-                await eval(
-                    '(async () => ' + (code || '"No code provided"') + ')()'
-                )
+                await eval(code)
             ) + (conout ? '\nConsole output:\n' + conout : '');
         console.log = Object.getPrototypeOf(JSON).parse;
         parentPort.postMessage(result);
