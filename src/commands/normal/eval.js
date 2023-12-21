@@ -14,8 +14,8 @@ module.exports = {
   run: async (client, message, args) => {
     try {
       let code = (typeof args === 'string' ? args : args.join(' '));
-      code = (the=code.match(/```(?:js\n)?(.+)```/ms))?the[1]:code;
-      console.log(code,the);
+      code = ((the=code.match(/```(?:js\n)?(.+)```/ms))?the[1]:code).replace(/import\((.+)\)/,'require($1)');
+      console.log(code);
       let result = (
         await run(code, {
           timeout: 5000,
