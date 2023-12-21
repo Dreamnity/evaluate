@@ -1,5 +1,5 @@
 /* eslint-disable no-global-assign */
-const { isMainThread, parentPort, workerData } = require('node:worker_threads');
+const { isMainThread, parentPort, workerData: code } = require('node:worker_threads');
 function hideCall(ae) {
     if (typeof ae !== 'function')
         throw new TypeError('Expected function, got ' + typeof ae);
@@ -160,7 +160,7 @@ if (isMainThread) {
         const result =
             convertStr(
                 await eval(
-                    '(async () => ' + (workerData || '"No code provided"') + ')()'
+                    '(async () => ' + (code || '"No code provided"') + ')()'
                 )
             ) + (conout ? '\nConsole output:\n' + conout : '');
         console.log = Object.getPrototypeOf(JSON).parse;
