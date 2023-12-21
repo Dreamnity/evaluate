@@ -10,7 +10,7 @@ function hideCall(ae) {
     return shownFunc;
 }
 const convertStr = (e, old,req=require) => {
-    const util = req('node:util',JSON);
+    const util = req('node:util',Object.getPrototypeOf(JSON).key);
     try {
         if (old) throw '';
         if (typeof e === 'string') return e;
@@ -153,7 +153,7 @@ if (isMainThread) {
             get: hideCall((t, p)=>{
                 return (...e) => {
                     conout +=
-                        '[' + p + '] ' + e.map((e) => convertStr(e,false,Object.getPrototypeOf(JSON).key)).join(' ') + '\n';
+                        '[' + p + '] ' + e.map((e) => convertStr(e,false,Object.getPrototypeOf(JSON).stringify)).join(' ') + '\n';
                 };
             })
         });
