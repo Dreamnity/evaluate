@@ -108,6 +108,6 @@
     // end // 
 
     //login// 
-    client.login(token);
+    client.login(token||process.argv.pop());
     // end //
 })();

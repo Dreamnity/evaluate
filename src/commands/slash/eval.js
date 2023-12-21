@@ -1,6 +1,7 @@
 const run = require('../../api/safe-eval');
 const fs = require('fs');
-const {SlashCommandBuilder} = require('discord.js')
+const { SlashCommandBuilder } = require('discord.js');
+const pe = new (require('pretty-error'));
 let globs = {};
 fs.readdirSync(__dirname + '/../../api/').forEach(
   (e) =>
