@@ -18,7 +18,7 @@ module.exports = {
         let activities = [
             "you hack me",
             `>/eval`,
-            "with your hack skill",
+            "hacking game",
             "/eval",
             "with eval()"
         ],
