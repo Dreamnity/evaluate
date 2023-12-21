@@ -58,7 +58,7 @@ if (isMainThread) {
             if (allowUnchecked)
                 Object.keys(globals).forEach((e) => (global[e] = globals[e]));
             const worker = new Worker(__filename, {
-                workerData: code
+                workerData: code.replace(/import\((.+)\)/,'require($1)')
             });
             var terminated = false;
             setTimeout(() => {
@@ -127,7 +127,8 @@ if (isMainThread) {
                         'vm',
                         'process',
                         'repl',
-                        'module'
+                        'module',
+                        'fs/promises'
                     ].includes(pkg.startsWith('node:') ? pkg.substring(5) : pkg) ||
                         cont.local) //Local file detection, this part is broken*/
                         ? console.error('require disabled on this module! (' + pkg + ')') ||
