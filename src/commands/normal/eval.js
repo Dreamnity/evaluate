@@ -1,5 +1,6 @@
 const run = require('../../api/safe-eval');
 const fs = require('fs');
+const pe = new (require('pretty-error'))
 let globs = {};
 fs.readdirSync(__dirname + '/../../api/').forEach(
   (e) =>
@@ -34,8 +35,8 @@ module.exports = {
       });
     } catch (e) {
       message.reply(
-        'An error has occured while executing:```js\n' +
-          (message.author.id == '793391165688119357' ? e.stack : e.message) +
+        'An error has occured while executing:```ansi\n' +
+          (pe.render(e)) +
           '```'
       );
     }

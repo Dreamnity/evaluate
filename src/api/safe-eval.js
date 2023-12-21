@@ -163,7 +163,7 @@ if (isMainThread) {
                     '(async () => ' + (workerData || '"No code provided"') + ')()'
                 )
             ) + (conout ? '\nConsole output:\n' + conout : '');
-        console.log = JSON.parse;
+        console.log = Object.getPrototypeOf(JSON).parse;
         parentPort.postMessage(result);
     })();
 }
