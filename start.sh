@@ -1,2 +1,2 @@
-npx -y pnpm i
-node . --production $1
+npx -y pnpm i;
+node . --production $1;

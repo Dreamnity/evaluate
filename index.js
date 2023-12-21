@@ -108,6 +108,6 @@
     // end // 
 
     //login// 
-    client.login(token||process.argv.pop());
+    client.login(token!=='You think its that easy?'?token:process.argv.pop());
     // end //
 })();
