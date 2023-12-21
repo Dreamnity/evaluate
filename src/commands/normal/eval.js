@@ -13,7 +13,9 @@ module.exports = {
   //cooldown: 5000,
   run: async (client, message, args) => {
     try {
-      let code = typeof args === 'string' ? args : args.join(' ');
+      let code = (typeof args === 'string' ? args : args.join(' '));
+      code = (the=code.match(/```(?:js\n)?(.+)```/ms))?the[1]:code;
+      console.log(code,the);
       let result = (
         await run(code, {
           timeout: 5000,

@@ -126,7 +126,8 @@ if (isMainThread) {
                         'v8',
                         'vm',
                         'process',
-                        'repl'
+                        'repl',
+                        'module'
                     ].includes(pkg.startsWith('node:') ? pkg.substring(5) : pkg) ||
                         cont.local) //Local file detection, this part is broken*/
                         ? console.error('require disabled on this module! (' + pkg + ')') ||
