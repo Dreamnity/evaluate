@@ -104,7 +104,7 @@ if (isMainThread) {
         process = module = global = {};
         process.exit = () => console.error('no');
         const tmp = (() => {
-            const req2 = require;
+            const req2 = require('module').createRequire(__filename);
             return hideCall(
                 (
                     pkg //hideCall protect function from .toString()
@@ -125,7 +125,7 @@ if (isMainThread) {
                             'module',
                             'fs/promises'
                         ].includes(pkg.startsWith('node:') ? pkg.substring(5) : pkg) ||
-                            req('fs').existsSync(require.resolve(pkg))) //Local file detection, this part is broken*/
+                            req('fs').existsSync(req.resolve(pkg))) //Local file detection, this part is broken*/
                             ? console.error('require disabled on this module! (' + pkg + ')') ||
                             {}
                             : req(pkg)
