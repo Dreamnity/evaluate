@@ -40,10 +40,14 @@ module.exports = {
           interaction.channel.send(haveNL ? '```js\n' + e + '```' : '`' + e + '`');
       });
     } catch (e) {
+      let text = 'An error has occured while executing:```ansi\n' +
+      (pe.render(e)) +
+        '```';
+      if(text.length>2000) text = text.replace(/\n\n/g,'\n');
+      if (text.length > 2000) text = text.replace(/\\x1B\[[0-9]{1,3}m/gm, '') + '\n[Color disabled due to large error)';
+      if(text.length > 2000) text = '`'+e.message+'`'+'\n[Error too large]'
       interaction.editReply(
-        'An error has occured while executing:```ansi\n' +
-          (pe.render(e)) +
-          '```'
+        text
       );
     }
   }
