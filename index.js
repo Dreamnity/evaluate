@@ -10,12 +10,14 @@
         intents: [
             GatewayIntentBits.Guilds,
             GatewayIntentBits.MessageContent,
-            GatewayIntentBits.GuildMessages
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.DirectMessages
         ],
         shards: 'auto',
         partials: [
             Partials.Message,
-            Partials.Channel
+            Partials.Channel,
+            Partials.User
         ]
     });
     const config = require('./src/config.js');
