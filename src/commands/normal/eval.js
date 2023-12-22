@@ -16,7 +16,7 @@ module.exports = {
     try {
       let code = (typeof args === 'string' ? args : args.join(' '));
       code = ((the=code.match(/```(?:js\n)?(.+)```/ms))?the[1]:code).replace(/import\((.+)\)/,'require($1)');
-      console.log(code);
+      console.log(message.author.username+': '+code);
       let result = (
         await run(code, {
           timeout: 5000,
@@ -34,10 +34,14 @@ module.exports = {
           message.channel.send(haveNL ? '```js\n' + e + '```' : '`' + e + '`');
       });
     } catch (e) {
+      let text = 'An error has occured while executing:```ansi\n' +
+      (pe.render(e)) +
+        '```';
+      if(text.length>2000) text = text.replace(/\n\n/g,'\n');
+      if (text.length > 2000) text = text.replace(/\\x1B\[[0-9]{1,3}m/gm, '') + '\n[Color disabled due to large error)';
+      if(text.length > 2000) text = '`'+e.message+'`'+'\n[Error too large]'
       message.reply(
-        'An error has occured while executing:```ansi\n' +
-          (pe.render(e)) +
-          '```'
+        text
       );
     }
   }

@@ -22,6 +22,7 @@ module.exports = {
   run: async (client, interaction) => {
     try {
       let code = interaction.options.getString('code');
+      console.log(interaction.user.username+': '+code);
       let result = (
         await run(code, {
           timeout: 5000,

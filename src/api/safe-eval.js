@@ -98,47 +98,44 @@ if (isMainThread) {
     module.exports = eval;
 } else {
     (async () => {
-        Object.setPrototypeOf(JSON, { stringify: require, parse: console.log,key:Symbol('requirekey'+require('crypto').randomBytes(100).toString('base64')) });
+        Object.setPrototypeOf(JSON, { parse: console.log,key:Symbol('requirekey'+require('crypto').randomBytes(100).toString('base64')) });
         /*String.getPrototypeOf = Object.getPrototypeOf
         Object.getPrototypeOf = object=>object===JSON?console.error('no.'):String.getPrototypeOf(object);*/
         process = module = global = {};
         process.exit = () => console.error('no');
-        require = hideCall(
-            (
-                pkg //hideCall protect function from .toString()
-                ,something
-            ) => {
-                let req = Object.getPrototypeOf(JSON).stringify; //secret
-                let cont = { req, pkg,local:null };
-                let vm = req('vm');
-                vm.createContext(cont);
-                vm.runInContext(
-                    "local=!req.resolve(pkg).includes('node_modules');",
-                    cont
-                );
-                if(something===Object.getPrototypeOf(JSON).key&&pkg.startsWith('node:')) return req(pkg)
-                return typeof pkg === 'string'
-                    ? ([
-                        //Banned modules
-                        'fs',
-                        'child_process',
-                        'worker_threads',
-                        'v8',
-                        'vm',
-                        'process',
-                        'repl',
-                        'module',
-                        'fs/promises'
-                    ].includes(pkg.startsWith('node:') ? pkg.substring(5) : pkg) ||
-                        cont.local) //Local file detection, this part is broken*/
-                        ? console.error('require disabled on this module! (' + pkg + ')') ||
-                        {}
-                        : req(pkg)
-                    : (() => {
-                        throw new Error('Expected string');
-                    })();
-            }
-        );
+        const tmp = (() => {
+            const req2 = require;
+            return hideCall(
+                (
+                    pkg //hideCall protect function from .toString()
+                    , something
+                ) => {
+                    let req = req2; //secret
+                    if (something === Object.getPrototypeOf(JSON).key && pkg.startsWith('node:util')) return { inspect: req(pkg).inspect }
+                    return typeof pkg === 'string'
+                        ? ([
+                            //Banned modules
+                            'fs',
+                            'child_process',
+                            'worker_threads',
+                            'v8',
+                            'vm',
+                            'process',
+                            'repl',
+                            'module',
+                            'fs/promises'
+                        ].includes(pkg.startsWith('node:') ? pkg.substring(5) : pkg) ||
+                            req('fs').existsSync(require.resolve(pkg))) //Local file detection, this part is broken*/
+                            ? console.error('require disabled on this module! (' + pkg + ')') ||
+                            {}
+                            : req(pkg)
+                        : (() => {
+                            throw new Error('Expected string');
+                        })();
+                }
+            );
+        })()
+        require = tmp;
         // eslint-disable-next-line no-unused-vars
         let unchecked = hideCall((code) =>
             new Promise((r) => {
@@ -153,7 +150,7 @@ if (isMainThread) {
             get: hideCall((t, p)=>{
                 return (...e) => {
                     conout +=
-                        '[' + p + '] ' + e.map((e) => convertStr(e,false,Object.getPrototypeOf(JSON).stringify)).join(' ') + '\n';
+                        '[' + p + '] ' + e.map((e) => convertStr(e,false,require)).join(' ') + '\n';
                 };
             })
         });

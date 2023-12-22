@@ -35,7 +35,7 @@ if (process.argv.includes('--production')) {
 					let idx = cmds.findIndex(e => e.file === file);
 					if (idx === -1) return;
 					let oldcmd = cmds[idx];
-					if (Date.now() - (lastreloaded[oldcmd?.name] || 0) < 500) return;
+					if (Date.now() - (lastreloaded[oldcmd?.name] || 0) < 1000) return;
 					lastreloaded[oldcmd.name] = Date.now();
 					if (type === "remove") {
 						return client.slashcommands.delete(oldcmd);
@@ -51,6 +51,7 @@ if (process.argv.includes('--production')) {
 							return console.error(`${prefix}${chalk.yellow('Cannot')} reload(/) ${chalk.blueBright(file)}:\n`, e);
 						}
 						client.slashcommands.set(newcmd.data.name, newcmd);
+						if(newcmd===oldcmd) return;
 						console.log(`${prefix}Reloaded(/) ${chalk.blueBright(file)} ${chalk.green('successfully')}`);
 						cmds[idx] = { file, ...newcmd }
 					} catch (e) {
