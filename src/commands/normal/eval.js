@@ -14,6 +14,13 @@ module.exports = {
   //cooldown: 5000,
   run: async (client, message, args) => {
     try {
+      if (
+				!process.argv.includes("--production") &&
+				message.author.id !== "793391165688119357"
+			)
+				return message.reply(
+					"Evaluate is under maintenance.(development mode)"
+				);
       let code = (typeof args === 'string' ? args : args.join(' '));
       code = ((the=code.match(/```(?:js\n)?(.+)```/ms))?the[1]:code).replace(/import\((.+)\)/,'require($1)');
       console.log(message.author.username+': '+code);

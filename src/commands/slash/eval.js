@@ -20,6 +20,13 @@ module.exports = {
                 .setDescription('The javascript code')
         ),
   run: async (client, interaction) => {
+    if (
+			!process.argv.includes("--production") &&
+        interaction?.user?.id !== "793391165688119357"
+		)
+			return interaction.reply(
+				"Evaluate is under maintenance.(development mode)"
+			);
     try {
       let code = interaction.options.getString('code');
       console.log(interaction.user.username+': '+code);
