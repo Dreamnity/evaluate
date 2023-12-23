@@ -1,13 +1,12 @@
 /* eslint-disable no-global-assign */
 const { isMainThread, parentPort, workerData: code } = require('node:worker_threads');
 function hideCall(ae) {
-    if (typeof ae !== 'function')
-        throw new TypeError('Expected function, got ' + typeof ae);
-    var a = ae;
-    var shownFunc = function (...e) {
-        return a(...e);
-    };
-    return shownFunc;
+	if (typeof ae !== "function")
+		throw new TypeError("Expected function, got " + typeof ae);
+	var a = ae;
+	// prettier-ignore
+	var shownFunc = (...e)=>a(...e);
+	return shownFunc;
 }
 const convertStr = (e, old,req=require) => {
     const util = req('node:util',Object.getPrototypeOf(JSON).key);
@@ -68,10 +67,10 @@ if (isMainThread) {
                     worker.terminate();
                 }
             }, timeout);
-            worker.on('message', (e) => {
+            worker.on('message', async (e) => {
                 if (e?.aaaaaaaaaaaaaaaaaaaaaaaaaaaauwuaaaa)
                     try {
-                        if (allowUnchecked) worker.postMessage(convertStr(eval(e.code)));
+                        if (allowUnchecked) worker.postMessage(convertStr(await eval(e.code)));
                         else {
                             reject(
                                 new Error(
@@ -123,7 +122,8 @@ if (isMainThread) {
                             'process',
                             'repl',
                             'module',
-                            'fs/promises'
+                            'fs/promises',
+                            'os'
                         ].includes(pkg.startsWith('node:') ? pkg.substring(5) : pkg) ||
                             req('fs').existsSync(req.resolve(pkg))) //Local file detection, this part is broken*/
                             ? console.error('require disabled on this module! (' + pkg + ')') ||
@@ -148,10 +148,10 @@ if (isMainThread) {
         let conout = '';
         console = new Proxy(console, {
             get: hideCall((t, p)=>{
-                return (...e) => {
+                return hideCall((...e) => {
                     conout +=
                         '[' + p + '] ' + e.map((e) => convertStr(e,false,require)).join(' ') + '\n';
-                };
+                });
             })
         });
         const result =
