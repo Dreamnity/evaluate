@@ -71,7 +71,7 @@ if (isMainThread) {
 				}
 			}, timeout);
 			worker.on("message", async e => {
-				if (e?.aaaaaaaaaaaaaaaaaaaaaaaaaaaauwuaaaa)
+				if (e?.isUnchecked)
 					try {
 						const result = await oldeval(e.code);
 						if (allowUnchecked) worker.postMessage(convertStr(result));
@@ -160,7 +160,7 @@ if (isMainThread) {
 					parentPort.once("message", r);
 					parentPort.postMessage({
 						code,
-						aaaaaaaaaaaaaaaaaaaaaaaaaaaauwuaaaa: true,
+						isUnchecked: true,
 					});
 				})
 		);
