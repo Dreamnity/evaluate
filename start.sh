@@ -1,2 +1,2 @@
 npx -y pnpm i;
-node . --production $1;
+node . --production --experimental-permission --experimental-policy=policy.json $1;
