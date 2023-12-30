@@ -1,17 +1,17 @@
-const { InteractionType } = require('discord.js');
+const { InteractionType } = require("discord.js");
 
 module.exports = {
-	name: 'interactionCreate',
+	name: "interactionCreate",
 	/**
 	 * @param {import('discord.js').BaseInteraction} interaction
 	 */
-  execute: async (interaction) => {
-    if (interaction.isChatInputCommand()) {
-      let client = interaction.client;
-      if (interaction.type == InteractionType.ApplicationCommand) {
-        if (interaction.user.bot) return;
-        try {
-          const command = client.slashcommands.get(interaction.commandName);
+	execute: async interaction => {
+		if (interaction.isChatInputCommand()) {
+			let client = interaction.client;
+			if (interaction.type == InteractionType.ApplicationCommand) {
+				if (interaction.user.bot) return;
+				try {
+					const command = client.slashcommands.get(interaction.commandName);
 					if (!command)
 						console.error(
 							`[Default interaction handler] No command matching ${interaction.commandName} was found.`
@@ -29,63 +29,72 @@ module.exports = {
 							`\`\`\`\n${error.stack}\n\`\`\``
 						);
 				}
-      }
-    } else if (interaction.isAutocomplete()) {
-      const command = interaction.client.slashcommands.get(
-        interaction.commandName
-      );
+			}
+		} else if (interaction.isAutocomplete()) {
+			const command = interaction.client.slashcommands.get(
+				interaction.commandName
+			);
 
-      if (!command) {
-        console.error(
-          `[Default interaction handler] No command matching ${interaction.commandName} was found.`
-        );
-        return;
-      }
+			if (!command) {
+				console.error(
+					`[Default interaction handler] No command matching ${interaction.commandName} was found.`
+				);
+				return;
+			}
 
-      if (command.autocomplete) await command.autocomplete(interaction);
-      else console.error(
-          `[Default interaction handler] No command matching ${interaction.commandName} was found.`
-        );
-    } else if (interaction.isButton()) {
-      const command = interaction.client.slashcommands.get(
-        interaction.message.interaction?.commandName.split(" ")[0] || interaction.customId
-      );
-// i still cant see my commits in this code
-      if (!command) {
-        console.error(
-          `[Default interaction handler] No button matching ${
-            interaction.message.interaction?.commandName.split(" ")[0] || interaction.customId
-          } was found.`
-        );
-        return;
-      }
+			if (command.autocomplete) await command.autocomplete(interaction);
+			else
+				console.error(
+					`[Default interaction handler] No command matching ${interaction.commandName} was found.`
+				);
+		} else if (interaction.isButton()) {
+			const command = interaction.client.slashcommands.get(
+				interaction.message.interaction?.commandName.split(" ")[0] ||
+					interaction.customId
+			);
+			// i still cant see my commits in this code
+			if (!command) {
+				console.error(
+					`[Default interaction handler] No button matching ${
+						interaction.message.interaction?.commandName.split(" ")[0] ||
+						interaction.customId
+					} was found.`
+				);
+				return;
+			}
 
-      if (command.button) await command.button(interaction);
-      else console.error(
-          `[Default interaction handler] No button matching ${
-            interaction.message.interaction?.commandName.split(" ")[0] || interaction.customId
-          } was found.`
-        );
-    } else if (interaction.isStringSelectMenu()) {
-      const command = interaction.client.slashcommands.get(
-        interaction.message.interaction?.commandName.split(" ")[0] || interaction.customId
-      );
+			if (command.button) await command.button(interaction);
+			else
+				console.error(
+					`[Default interaction handler] No button matching ${
+						interaction.message.interaction?.commandName.split(" ")[0] ||
+						interaction.customId
+					} was found.`
+				);
+		} else if (interaction.isStringSelectMenu()) {
+			const command = interaction.client.slashcommands.get(
+				interaction.message.interaction?.commandName.split(" ")[0] ||
+					interaction.customId
+			);
 
-      if (!command) {
-        console.error(
-          `[Default interaction handler] No selectmenu matching ${
-            interaction.message.interaction?.commandName.split(" ")[0] || interaction.customId
-          } was found.`
-        );
-        return;
-      }
+			if (!command) {
+				console.error(
+					`[Default interaction handler] No selectmenu matching ${
+						interaction.message.interaction?.commandName.split(" ")[0] ||
+						interaction.customId
+					} was found.`
+				);
+				return;
+			}
 
-      if (command.selectMenu) await command.selectMenu(interaction);
-      else console.error(
-          `[Default interaction handler] No selectmenu matching ${
-            interaction.message.interaction?.commandName.split(" ")[0] || interaction.customId
-          } was found.`
-        );
-    } 
-  }
+			if (command.selectMenu) await command.selectMenu(interaction);
+			else
+				console.error(
+					`[Default interaction handler] No selectmenu matching ${
+						interaction.message.interaction?.commandName.split(" ")[0] ||
+						interaction.customId
+					} was found.`
+				);
+		}
+	},
 };

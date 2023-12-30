@@ -1,5 +1,9 @@
 /* eslint-disable no-global-assign */
-const { isMainThread, parentPort, workerData: code } = require('node:worker_threads');
+const {
+	isMainThread,
+	parentPort,
+	workerData: code,
+} = require("node:worker_threads");
 function hideCall(ae) {
 	if (typeof ae !== "function")
 		throw new TypeError("Expected function, got " + typeof ae);
@@ -137,9 +141,9 @@ if (isMainThread) {
 								"module",
 								"fs/promises",
 								"os",
-              "console",
-              'wasi',
-                'module'
+								"console",
+								"wasi",
+								"module",
 						  ].includes(pkg.startsWith("node:") ? pkg.substring(5) : pkg) ||
 						  req("fs").existsSync(req.resolve(pkg)) //Local file detection, this part is broken*/
 							? console.error(

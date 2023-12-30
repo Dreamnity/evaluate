@@ -1,4 +1,4 @@
 module.exports = {
-    token: 'You think its that easy?',
-    prefix: '>/'
-}
+	token: "You think its that easy?",
+	prefix: ">/",
+};

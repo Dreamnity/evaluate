@@ -1,26 +1,34 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const chalk = require('chalk');
-const prefix = `[${chalk.cyan('HMR')}] `
+const chalk = require("chalk");
+const prefix = `[${chalk.cyan("HMR")}] `;
 const slashpath = path.resolve(__dirname, "..", "src/commands/slash"),
 	normalpath = path.resolve(__dirname, "..", "src/commands/normal");
-const cmds = fs
-	.readdirSync(slashpath)
-	.map(e => ({
-		file: e,
-		name: require(path.resolve(slashpath + "/" + e))?.data?.name,
-	}));
-const ncmds = fs
-	.readdirSync(normalpath)
-	.map(e => ({
-		file: e,
-		...require(path.resolve(normalpath + "/" + e)),
-	}));
-cmds.forEach(e => e?.name || console.error(`${prefix}${chalk.red(e.file)}: ${chalk.red('invalid')} slash command.`));
-ncmds.forEach(e => e?.name || console.error(`${prefix}${chalk.red(e.file)}: ${chalk.red('invalid')} command.`));
+const cmds = fs.readdirSync(slashpath).map(e => ({
+	file: e,
+	name: require(path.resolve(slashpath + "/" + e))?.data?.name,
+}));
+const ncmds = fs.readdirSync(normalpath).map(e => ({
+	file: e,
+	...require(path.resolve(normalpath + "/" + e)),
+}));
+cmds.forEach(
+	e =>
+		e?.name ||
+		console.error(
+			`${prefix}${chalk.red(e.file)}: ${chalk.red("invalid")} slash command.`
+		)
+);
+ncmds.forEach(
+	e =>
+		e?.name ||
+		console.error(
+			`${prefix}${chalk.red(e.file)}: ${chalk.red("invalid")} command.`
+		)
+);
 var lastreloaded = {};
-if (process.argv.includes('--production')) {
-	console.log(`${prefix}${chalk.red('HMR Disabled in production')}`)
+if (process.argv.includes("--production")) {
+	console.log(`${prefix}${chalk.red("HMR Disabled in production")}`);
 } else {
 	/**
 	 * uwu
@@ -46,20 +54,35 @@ if (process.argv.includes('--production')) {
 						var newcmd;
 						try {
 							newcmd = require(slashpath + "/" + file);
-						}
-						catch (e) {
-							return console.error(`${prefix}${chalk.yellow('Cannot')} reload(/) ${chalk.blueBright(file)}:\n`, e);
+						} catch (e) {
+							return console.error(
+								`${prefix}${chalk.yellow(
+									"Cannot"
+								)} reload(/) ${chalk.blueBright(file)}:\n`,
+								e
+							);
 						}
 						client.slashcommands.set(newcmd.data.name, newcmd);
-						if(newcmd===oldcmd) return;
-						console.log(`${prefix}Reloaded(/) ${chalk.blueBright(file)} ${chalk.green('successfully')}`);
-						cmds[idx] = { file, ...newcmd }
+						if (newcmd === oldcmd) return;
+						console.log(
+							`${prefix}Reloaded(/) ${chalk.blueBright(file)} ${chalk.green(
+								"successfully"
+							)}`
+						);
+						cmds[idx] = { file, ...newcmd };
 					} catch (e) {
 						client.slashcommands.set(oldcmd.data.name, oldcmd);
-						console.error(`${prefix}${chalk.yellow('Cannot')} reload(/) ${chalk.blueBright(file)}:\n`, e);
+						console.error(
+							`${prefix}${chalk.yellow("Cannot")} reload(/) ${chalk.blueBright(
+								file
+							)}:\n`,
+							e
+						);
 					}
 				})
-				.on("error", e => console.error(`${prefix}${chalk.yellow('Cannot')} watch(/):\n`, e));
+				.on("error", e =>
+					console.error(`${prefix}${chalk.yellow("Cannot")} watch(/):\n`, e)
+				);
 			console.log(`${prefix}Watching ${slashpath} for slash commands`);
 			normal
 				.on("change", (type, file) => {
