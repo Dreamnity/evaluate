@@ -1,7 +1,4 @@
 /* eslint-disable no-global-assign */
-if (process.version < 21)
-	throw new Error("Requires node > 21 to properly limit permissions.");
-if (!process.permission) throw new Error("Need --experimental-permission");
 const { isMainThread, parentPort, workerData: code } = require('node:worker_threads');
 function hideCall(ae) {
 	if (typeof ae !== "function")
