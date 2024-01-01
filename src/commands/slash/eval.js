@@ -32,7 +32,8 @@ module.exports = {
 				await run(code, {
 					timeout: 5000,
 					allowUnchecked: interaction.user.id == "793391165688119357",
-					globals: { client, message: interaction, ...globs },
+          globals: { client, message: interaction, ...globs },
+          userId:interaction.user.id
 				})
 			)
 				.toString()

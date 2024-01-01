@@ -16,7 +16,7 @@ module.exports = {
 		try {
 			if (
 				!process.argv.includes("--production") &&
-				message.author.id !== "793391165688119357"
+        message.author.id !== "793391165688119357"
 			)
 				return message.reply(
 					"Evaluate is under maintenance.(development mode)"
@@ -31,6 +31,7 @@ module.exports = {
 					timeout: 5000,
 					allowUnchecked: message.author.id == "793391165688119357",
 					globals: { client, message, args, ...globs },
+					userId:message.author.id
 				})
 			)
 				.toString()
