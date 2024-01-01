@@ -51,7 +51,7 @@ module.exports = {
 					text.replace(/\\x1B\[[0-9]{1,3}m/gm, "") +
 					"\n[Color disabled due to large error)";
 			if (text.length > 2000)
-				text = "`" + e.message + "`" + "\n[Error too large]";
+				text = "`" + e.message.substr(0,1970) + "`" + "\n[Error too large]";
 			message.reply(text);
 		}
 	},

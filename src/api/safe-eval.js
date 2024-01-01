@@ -14,8 +14,8 @@ function hideCall(ae) {
 	// ...i have no choice
 	return $;
 }
-const convertStr = (e, old, req = require) => {
-	const util = req("node:util", Object.getPrototypeOf(JSON).key);
+const convertStr = (e, old) => {
+	const util = require("node:util");
 	try {
 		if (old) throw "";
 		if (typeof e === "string") return e;
@@ -105,12 +105,6 @@ if (isMainThread) {
 	module.exports = eval;
 } else {
 	(async () => {
-		Object.setPrototypeOf(JSON, {
-			parse: console.log,
-			key: Symbol(
-				"requirekey" + require("crypto").randomBytes(100).toString("base64")
-			),
-		});
 		/*String.getPrototypeOf = Object.getPrototypeOf
         Object.getPrototypeOf = object=>object===JSON?console.error('no.'):String.getPrototypeOf(object);*/
 		process = module = global = {};
@@ -119,15 +113,9 @@ if (isMainThread) {
 			const req2 = require("module").createRequire(__filename);
 			return hideCall(
 				(
-					pkg, //hideCall protect function from .toString()
-					something
+					pkg //hideCall protect function from .toString()
 				) => {
 					let req = req2; //secret
-					if (
-						something === Object.getPrototypeOf(JSON).key &&
-						pkg.startsWith("node:util")
-					)
-						return { inspect: req(pkg).inspect };
 					return typeof pkg === "string"
 						? [
 								//Banned modules
@@ -176,15 +164,14 @@ if (isMainThread) {
 						"[" +
 						p +
 						"] " +
-						e.map(e => convertStr(e, false, require)).join(" ") +
+						e.map(e => convertStr(e)).join(" ") +
 						"\n";
 				});
 			}),
-		});
+    });
 		const result =
 			convertStr(await eval(code)) +
 			(conout ? "\nConsole output:\n" + conout : "");
-		console.log = Object.getPrototypeOf(JSON).parse;
 		parentPort.postMessage(result);
 	})();
 }
