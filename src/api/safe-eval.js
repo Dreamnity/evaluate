@@ -4,6 +4,8 @@ const {
 	parentPort,
 	workerData: code,
 } = require("node:worker_threads");
+const userdata = require("./fspx");
+const { serialize, deserialize } = require("v8");
 function hideCall(ae) {
 	if (typeof ae !== "function")
 		throw new TypeError("Expected function, got " + typeof ae);
@@ -51,7 +53,14 @@ if (isMainThread) {
 	// eslint-disable-next-line no-shadow-restricted-names
 	const eval = (
 		code = '"No code provided"',
-		{ timeout = 5000, allowUnchecked = false, globals = {}, apifolder } = {}
+		{
+			timeout = 5000,
+			allowUnchecked = false,
+			globals = {},
+			apifolder,
+			userId = "default",
+			userdataPath = "../userdata",
+		} = {}
 	) => {
 		if (apifolder)
 			fs.readdirSync(apifolder).forEach(
@@ -64,7 +73,11 @@ if (isMainThread) {
 			if (allowUnchecked)
 				Object.keys(globals).forEach(e => (global[e] = globals[e]));
 			const worker = new Worker(__filename, {
-				workerData: code.replace(/import\((.+)\)/, "require($1)"),
+				workerData: {
+					code: code.replace(/import\((.+)\)/, "require($1)"),
+					userId,
+					userdataPath,
+				},
 			});
 			var terminated = false;
 			setTimeout(() => {
@@ -160,18 +173,31 @@ if (isMainThread) {
 		console = new Proxy(console, {
 			get: hideCall((t, p) => {
 				return hideCall((...e) => {
-					conout +=
-						"[" +
-						p +
-						"] " +
-						e.map(e => convertStr(e)).join(" ") +
-						"\n";
+					conout += "[" + p + "] " + e.map(e => convertStr(e)).join(" ") + "\n";
 				});
 			}),
     });
-		const result =
-			convertStr(await eval(code)) +
+    try {
+      if (code.userId in userdata[code.userdataPath])
+        deserialize(userdata[code.userdataPath][code.userId]._content).forEach(
+          e => (globalThis[e.name] = e.value)
+        );
+    }catch{}
+		const __context = {};
+		Object.getOwnPropertyNames(globalThis).forEach(e => {
+			try {
+				__context[e] = globalThis[e];
+			} catch {}
+		});
+		const _ =
+			convertStr(await eval(code.code)) +
 			(conout ? "\nConsole output:\n" + conout : "");
-		parentPort.postMessage(result);
+		const __changed = Object.getOwnPropertyNames(globalThis)
+			.filter(e => globalThis[e] !== __context[e])
+      .map(e => ({ name: e, value: globalThis[e] }));
+    try {
+      userdata[code.userdataPath][code.userId] = serialize(__changed);
+    }catch(e){convertStr.internalError('Cannot save changed context:',e)}
+		parentPort.postMessage(_);
 	})();
 }
