@@ -176,19 +176,17 @@ if (isMainThread) {
 					conout += "[" + p + "] " + e.map(e => convertStr(e)).join(" ") + "\n";
 				});
 			}),
-    });
-    try {
-      if (code.userId in userdata[code.userdataPath])
-        deserialize(userdata[code.userdataPath][code.userId]._content).forEach(
-          e => (globalThis[e.name] = e.value)
-        );
-    }catch{}
-		const __context = {};
-		Object.getOwnPropertyNames(globalThis).forEach(e => {
+    });
+		const __context = {};	Object.getOwnPropertyNames(globalThis).forEach(e => {
 			try {
 				__context[e] = globalThis[e];
 			} catch {}
 		});
+try {
+if (code.userId in userdata[code.userdataPath]) deserialize(userdata[code.userdataPath][code.userId]._content).forEach(
+          e => (globalThis[e.name] = e.value)
+        );
+    }catch{}
 		const _ =
 			convertStr(await eval(code.code)) +
 			(conout ? "\nConsole output:\n" + conout : "");
